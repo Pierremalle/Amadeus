@@ -1,0 +1,23 @@
+[workspace]
+members = [
+    "amadeus_embedded",
+    "webapp",
+]
+resolver = "2"
+
+[profile.android-dev]
+inherits = "dev"
+
+[profile.dev]
+opt-level = 0
+debug = 2
+
+[profile.release]
+opt-level = 3
+
+[profile.server-dev]
+inherits = "dev"
+
+[profile.wasm-dev]
+opt-level = 1
+inherits = "dev"
