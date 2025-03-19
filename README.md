@@ -22,7 +22,7 @@ Contributors to this project are :
 - [Lydie Boissier](https://github.com/Grisee)
 - [Kevin Condamin](https://github.com/NaTAzOx)
 - [Tristan Dumoulin](https://github.com/Zetarite)
-- [Marien Chazel]()
+- [Marien Chazel](https://github.com/chazelm)
 - [Achard Lucas](https://github.com/Pierremalle)
 
 ## Licence
