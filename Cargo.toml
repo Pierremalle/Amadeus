@@ -1,8 +1,5 @@
 [workspace]
-members = [
-    "amadeus_embedded",
-    "webapp",
-]
+members = ["amadeus_embedded", "file_sender", "webapp"]
 resolver = "2"
 
 [profile.android-dev]
