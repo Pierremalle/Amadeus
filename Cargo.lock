@@ -5463,6 +5463,13 @@ dependencies = [
 ]
 
 [[package]]
+name = "tokio_signal_handler"
+version = "0.1.0"
+dependencies = [
+ "tokio",
+]
+
+[[package]]
 name = "toml"
 version = "0.4.10"
 source = "registry+https://github.com/rust-lang/crates.io-index"
