@@ -3,15 +3,34 @@ use super::wav_handler::wav_to_buffer;
 use crate::errors::connection_error::ConnectionError;
 use std::path::Path;
 
+/// Converts a vector of i16 samples to a vector of u8 samples
 fn i16_to_u8_vec(samples: &[i16]) -> Vec<u8> {
     samples.iter().flat_map(|&s| s.to_le_bytes()).collect()
 }
 
-pub(crate) fn send_mp3(data: &Path, server: &str) -> Result<usize, ConnectionError> {
-    let socket = create_socket();
+///
+/// Sends a wav file to a server
+///
+/// # Arguments
+/// * `data` - A path to the wav file
+/// * `server` - A server address
+/// * `bind` - A bind address
+///
+/// # Returns
+/// A Result containing the number of bytes sent or an error
+pub(crate) fn send_mp3(data: &Path, server: &str, bind: &str) -> Result<usize, ConnectionError> {
+    let socket = match create_socket(bind) {
+        Ok(s) => s,
+        Err(_) => {
+            return Err(ConnectionError {
+                details: "Cannot create socket".to_string(),
+            });
+        }
+        
+    };
     let data = wav_to_buffer(data);
     let data = i16_to_u8_vec(&data);
-    let sombrero = match socket.send_to(&data, server) {
+    let bytes_sent = match socket.send_to(&data, server) {
         Ok(s) => s,
         Err(_) => {
             return Err(ConnectionError {
@@ -20,7 +39,7 @@ pub(crate) fn send_mp3(data: &Path, server: &str) -> Result<usize, ConnectionErr
         }
     };
 
-    return Ok(sombrero);
+    return Ok(bytes_sent);
 }
 
 #[cfg(test)]
