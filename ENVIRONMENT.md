@@ -4,74 +4,29 @@
 
 To start programming on this project, a few needs to be followed to unsure a successfull build.
 
-## Global
+## Docker
 
-### Étape 1: Créer le fichier `.git/hooks/pre-commit`
+Most of the services can be run using docker.
+You just need to create a .env file at root with following variable :
 
-Dans le répertoire de ton projet, crée le fichier `pre-commit` dans le dossier `.git/hooks/` s'il n'existe pas déjà :
+```
+FRONT_PORT=8080
+API_PORT=8000
+BDD_PORT=5432
 
-```bash
-touch .git/hooks/pre-commit
+TOKIO_PORT=9000
+TOKIO_CONSOLE_PORT=6669
+
+SURREALDB_USER=root
+SURREALDB_PASS=root
 ```
 
-### Étape 2: Ajouter le contenu du script
-
-Ouvre ce fichier et ajoute les lignes suivantes pour exécuter `cargo fmt`, `cargo clippy` et `cargo check` avant chaque commit :
-
-```bash
-#!/bin/sh
-
-# Exécuter cargo fmt pour formater le code
-cargo fmt -- --check
-
-# Exécuter cargo clippy pour analyser le code
-cargo clippy --all-features --workspace -- -D warnings
-
-# Exécuter cargo check pour vérifier que le code compile
-cargo check --all
-```
-
-Ces commandes s'assureront que le code est formaté, sans avertissements et qu'il compile correctement avant chaque commit.
-
-### Étape 3: Rendre le script exécutable
-
-Assure-toi que le fichier a les permissions d'exécution en utilisant la commande suivante :
-
-```bash
-chmod +x .git/hooks/pre-commit
-```
-
----
-
-## 2. Configurer `Cargo.toml` pour faciliter l’utilisation du script
-
-Dans ton fichier `Cargo.toml`, il n'y a pas de mécanisme intégré pour lier directement des hooks Git, mais tu peux t'assurer que les outils nécessaires comme `clippy` ou `rustfmt` sont présents.
-
-Voici un exemple de ce à quoi pourrait ressembler ton fichier `Cargo.toml` avec ces outils :
-
-```toml
-[dev-dependencies]
-# Ces dépendances sont uniquement utilisées lors des vérifications
-clippy = "0.1"
-rustfmt = "1.0"
-```
-
-Cela garantit que les outils nécessaires seront disponibles lorsque les commandes seront exécutées.
-
----
+You can absolutely change ports
 
 ## Webserver
 
-If running with WSL, create a ".wslconfig" file in your $User directory in windows and paste
-
-```
-[wsl2]
-networkingMode=mirrored
-```
-
 Now for everyone.
 
-- Install the rust toolchain 1.87.0-nightly
 - Install cargo
 - Follow this [tutorial](https://dioxuslabs.com/learn/0.6/getting_started/#) to get dioxus.
 - Install DIoxus VSCode extension
