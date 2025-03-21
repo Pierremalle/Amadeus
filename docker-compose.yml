@@ -15,3 +15,13 @@ services:
       - "${BDD_PORT}:8000"
     volumes:
       - ./bdd:/data
+
+  tokio_middleware:
+    build:
+      context: ./tokio_signal_handler
+      dockerfile: Dockerfile
+      target: runtime
+    env_file: .env
+    ports:
+      - "${TOKIO_PORT}:9000"
+      - "${TOKIO_CONSOLE_PORT}:6669"

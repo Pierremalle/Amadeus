@@ -15,6 +15,8 @@ The stack will be the following :
 - An embedded module used to tune and save music.
 - An analytical middleware to extrapolate datas from the music (tempo, range, instruments)
 
+![Stack architecture](archi.png)
+
 ## Contributors
 
 Contributors to this project are :
