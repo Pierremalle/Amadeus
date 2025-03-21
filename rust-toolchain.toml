@@ -1,5 +1,5 @@
 [toolchain]
-channel = "1.82.0"
+channel = "stable"
 targets = ["x86_64-unknown-linux-gnu"]
 
 components = ["rust-src"]

@@ -3,8 +3,10 @@ services:
     build:
       context: .
       dockerfile: webapp/Dockerfile
+      target: base
+    env_file: .env
     ports:
-      - "8080:8080"
-      - "8000:8000"
+      - "${FRONT_PORT}:8080"
+      - "${API_PORT}:8000"
     volumes:
       - "./webapp:/usr/src/myapp"
