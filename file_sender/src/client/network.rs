@@ -1,7 +1,8 @@
-use super::socket::create_socket;
 use super::wav_handler::wav_to_buffer;
 use crate::errors::connection_error::ConnectionError;
 use std::path::Path;
+use std::io::{BufWriter, Write};
+use std::net::TcpStream;
 
 /// Converts a vector of i16 samples to a vector of u8 samples
 fn i16_to_u8_vec(samples: &[i16]) -> Vec<u8> {
@@ -18,28 +19,21 @@ fn i16_to_u8_vec(samples: &[i16]) -> Vec<u8> {
 ///
 /// # Returns
 /// A Result containing the number of bytes sent or an error
-pub(crate) fn send_mp3(data: &Path, server: &str, bind: &str) -> Result<usize, ConnectionError> {
-    let socket = match create_socket(bind) {
+pub(crate) fn send_mp3(data: &Path, server: &str) -> Result<usize, ConnectionError> {
+    let stream = match TcpStream::connect(server) {
         Ok(s) => s,
         Err(_) => {
             return Err(ConnectionError {
-                details: "Cannot create socket".to_string(),
+                details: "Cannot connect to server".to_string(),
             });
         }
-        
     };
+    let mut writer = BufWriter::new(stream);
     let data = wav_to_buffer(data);
     let data = i16_to_u8_vec(&data);
-    let bytes_sent = match socket.send_to(&data, server) {
-        Ok(s) => s,
-        Err(_) => {
-            return Err(ConnectionError {
-                details: "Cannot send data".to_string(),
-            });
-        }
-    };
-
-    return Ok(bytes_sent);
+    writer.write_all(&data).map_err(|e| ConnectionError { details: e.to_string() })?;
+    writer.flush().map_err(|e| ConnectionError { details: e.to_string() })?;
+    Ok(data.len())
 }
 
 #[cfg(test)]
