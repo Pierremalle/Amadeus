@@ -10,3 +10,20 @@ services:
       - "${API_PORT}:8000"
     volumes:
       - "./webapp:/usr/src/myapp"
+
+  surrealdb:
+    image: surrealdb/surrealdb:latest
+    container_name: surrealdb
+    restart: unless-stopped
+    user: ":"
+    command: >
+      start --log info
+      --user $SURREALDB_USER
+      --pass $SURREALDB_PASS
+      rocksdb://data
+    env_file:
+      - .env
+    ports:
+      - "${BDD_PORT}:8000"
+    volumes:
+      - ./bdd:/data
