@@ -3,6 +3,7 @@ members = [
     "amadeus_embedded",
     "tokio_signal_handler",
     "webapp",
+    "file_sender"
 ]
 resolver = "2"
 
