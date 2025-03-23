@@ -1,8 +1,8 @@
 use super::wav_handler::wav_to_buffer;
 use crate::errors::connection_error::ConnectionError;
-use std::path::Path;
 use std::io::{BufWriter, Write};
 use std::net::TcpStream;
+use std::path::Path;
 
 /// Converts a vector of i16 samples to a vector of u8 samples
 fn i16_to_u8_vec(samples: &[i16]) -> Vec<u8> {
@@ -29,10 +29,21 @@ pub(crate) fn send_mp3(data: &Path, server: &str) -> Result<usize, ConnectionErr
         }
     };
     let mut writer = BufWriter::new(stream);
-    let data = wav_to_buffer(data);
+    let data = match wav_to_buffer(data) {
+        Ok(d) => d,
+        Err(e) => {
+            return Err(ConnectionError {
+                details: e.to_string(),
+            })
+        }
+    };
     let data = i16_to_u8_vec(&data);
-    writer.write_all(&data).map_err(|e| ConnectionError { details: e.to_string() })?;
-    writer.flush().map_err(|e| ConnectionError { details: e.to_string() })?;
+    writer.write_all(&data).map_err(|e| ConnectionError {
+        details: e.to_string(),
+    })?;
+    writer.flush().map_err(|e| ConnectionError {
+        details: e.to_string(),
+    })?;
     Ok(data.len())
 }
 

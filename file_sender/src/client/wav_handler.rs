@@ -1,4 +1,5 @@
-use std::{path::Path, process::exit};
+use crate::errors::wav_error::WavError;
+use std::path::Path;
 use wavers::{Samples, Wav};
 
 /// Converts a wav file to a buffer of i16 samples using wavers crate
@@ -10,22 +11,46 @@ use wavers::{Samples, Wav};
 /// # Returns
 ///
 /// A vector of i16 samples
-pub fn wav_to_buffer(path: &Path) -> Vec<i16> {
+pub fn wav_to_buffer(path: &Path) -> Result<Vec<i16>, WavError> {
     let mut wav: Wav<i16> = match Wav::from_path(path) {
         Ok(w) => w,
         Err(_) => {
-            print!("Cannot read wav file");
-            exit(1);
+            return Err(WavError {
+                details: "Cannot open wav file".to_string(),
+            })?;
         }
     };
 
     let samples: Samples<i16> = match wav.read() {
         Ok(s) => s,
         Err(_) => {
-            print!("Cannot read wav samples");
-            exit(1);
+            return Err(WavError {
+                details: "Cannot create samples".to_string(),
+            })?;
         }
     };
 
-    return samples.to_vec();
+    Ok(samples.to_vec())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    #[test]
+    fn test_wav_to_buffer() {
+        let mut path = PathBuf::from(env!("CARGO_MANIFEST_DIR"));
+        path.push("Chaussette_112202.wav");
+
+        let buffer = match wav_to_buffer(&path) {
+            Ok(b) => b,
+            Err(e) => {
+                println!("Error : {}", e);
+                assert!(false);
+                return;
+            }
+        };
+        assert_eq!(buffer.len(), 16803072);
+    }
 }
