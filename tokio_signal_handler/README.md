@@ -11,7 +11,7 @@ Connect to the middleware with through a TCP socket on the address 9000
 ## Serve
 
 Following command is used to run the middleware :
-`cargo run [<server>] [<bind>]`
+`RUSTFLAGS="--cfg tokio_unstable" cargo run [<server>] [<bind>]`
 
 Both arguments are optionnal, if not precised they will take the values :
 

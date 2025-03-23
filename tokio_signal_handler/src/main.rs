@@ -1,17 +1,16 @@
 pub mod processors;
 
-use std::{env, io::Error, process::exit};
+use std::{env, process::exit};
 
-use tokio::net::TcpListener;
 use processors::process;
+use tokio::net::TcpListener;
 
 #[tokio::main]
 async fn main() {
     console_subscriber::init();
 
-    let port: String = env::var("TOKIO_PORT").unwrap_or_else(|_| "8080".to_string());
+    let port: String = env::var("TOKIO_PORT").unwrap_or_else(|_| "9000".to_string());
     let bind = format!("0.0.0.0:{}", port);
-
 
     let listener = match TcpListener::bind(bind).await {
         Ok(l) => l,
