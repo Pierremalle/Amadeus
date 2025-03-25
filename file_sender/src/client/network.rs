@@ -9,7 +9,6 @@ fn i16_to_u8_vec(samples: &[i16]) -> Vec<u8> {
     samples.iter().flat_map(|&s| s.to_le_bytes()).collect()
 }
 
-///
 /// Sends a wav file to a server
 ///
 /// # Arguments

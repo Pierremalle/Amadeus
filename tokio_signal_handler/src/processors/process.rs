@@ -4,8 +4,11 @@ use std::env;
 use reqwest::header::{HeaderMap, HeaderName, HeaderValue};
 use tokio::{io::AsyncWriteExt, net::TcpStream};
 
-use crate::processors::receptor::get_datas;
+use crate::processors::{receptor::get_datas, sender::send_data};
 
+/// Process method handling app logic
+///
+/// Gather data from the socket and send data to the server
 pub async fn process(mut socket: TcpStream) {
     let mut datas: Vec<i16> = Vec::new();
 
@@ -13,29 +16,10 @@ pub async fn process(mut socket: TcpStream) {
 
     println!("Received all data: {:?}", datas.len());
 
-    let server_addr: String = env::var("BACKEND_ADDR").unwrap_or_else(|_| "localhost".to_string());
-    let server_port: String = env::var("API_PORT").unwrap_or_else(|_| "8000".to_string());
-    let url = format!("{}:{}", server_addr, server_port);
-
-    let mut headers = HeaderMap::new();
-    headers.insert(
-        HeaderName::from_static("content-type"),
-        HeaderValue::from_static("application/json"),
-    );
-    let body = json!({
-        "data": datas,
-    });
-
-    let client = reqwest::Client::new();
-    let resp = match client.post(url).headers(headers).json(&body).send().await {
-        Ok(r) => r,
-        Err(e) => {
-            eprintln!("Error: {:?}", e);
-            socket.shutdown().await.unwrap();
-            return;
-        }
+    let _ = match send_data(&mut socket, &*datas).await {
+        Ok(_) => println!("Data sending successfull"),
+        Err(_) => println!("Cannot send data to server"),
     };
-    println!("{:#?}", resp);
 
     socket.shutdown().await.unwrap();
 }
