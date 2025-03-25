@@ -5,6 +5,10 @@ use std::{env, process::exit};
 use processors::process::process;
 use tokio::net::TcpListener;
 
+/// Tokio default main
+///
+/// Spawn a new background task for each connection
+/// Treat them asynchronously
 #[tokio::main]
 async fn main() {
     console_subscriber::init();
