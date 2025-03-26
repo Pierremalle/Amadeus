@@ -1,12 +1,11 @@
 services:
-  web:
+  backend:
     build:
       context: .
-      dockerfile: webapp/Dockerfile
+      dockerfile: backend/Dockerfile
       target: base
     env_file: .env
     ports:
-      - "${FRONT_PORT}:8080"
       - "${API_PORT}:8000"
     volumes:
       - "./webapp:/usr/src/myapp"

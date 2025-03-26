@@ -14,6 +14,13 @@ enum Route {
     Home {},
     #[route("/blog/:id")]
     Blog { id: i32 },
+    #[route("/new_song")]
+    upload_song
+}
+
+#[server]
+async fn upload_song() -> Result<(), ServerFnError>{
+    return Ok(())
 }
 
 const FAVICON: Asset = asset!("/assets/favicon.ico");
