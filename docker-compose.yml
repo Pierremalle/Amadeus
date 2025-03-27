@@ -1,15 +1,4 @@
 services:
-  backend:
-    build:
-      context: .
-      dockerfile: backend/Dockerfile
-      target: base
-    env_file: .env
-    ports:
-      - "${API_PORT}:8000"
-    volumes:
-      - "./webapp:/usr/src/myapp"
-
   surrealdb:
     image: surrealdb/surrealdb:latest
     container_name: surrealdb
