@@ -8,5 +8,5 @@ faker_rand = "0.1.1"
 rand = "0.8.5"
 rocket = { version = "0.5.1", features = ["json"] }
 serde = { version = "1.0.209", features = ["derive"] }
-surrealdb = "1.5.6"
+surrealdb = "2.0.4"
 thiserror = "1.0.64"
