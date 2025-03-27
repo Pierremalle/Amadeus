@@ -1,3 +1,4 @@
+use faker_rand::fr_fr::internet::Email;
 use faker_rand::fr_fr::names::FirstName;
 use rocket::get;
 use rocket::serde::json::Json;
@@ -81,6 +82,7 @@ pub async fn session() -> Result<Json<String>, Error> {
 
 #[derive(Serialize, Deserialize)]
 struct Params<'a> {
+    email: &'a str,
     name: &'a str,
     pass: &'a str,
 }
@@ -88,6 +90,7 @@ struct Params<'a> {
 #[get("/new_user")]
 pub async fn make_new_user() -> Result<String, Error> {
     let name = rand::random::<FirstName>().to_string();
+    let email = rand::random::<Email>().to_string();
     let pass = rand::random::<FirstName>().to_string();
     let jwt = DB
         .signup(Record {
@@ -96,6 +99,7 @@ pub async fn make_new_user() -> Result<String, Error> {
             database: "database",
             params: Params {
                 name: &name,
+                email: &email,
                 pass: &pass,
             },
         })
