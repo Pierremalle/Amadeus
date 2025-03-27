@@ -6,14 +6,14 @@ use tokio::{io::AsyncWriteExt, net::TcpStream};
 
 pub async fn send_data(
     socket: &mut TcpStream,
-    datas: &[i16],
+    data: &[i16],
 ) -> Result<(), Box<dyn std::error::Error>> {
     let server_addr = env::var("BACKEND_ADDR").unwrap_or_else(|_| "http://localhost".to_string());
     let server_port = env::var("API_PORT").unwrap_or_else(|_| "8000".to_string());
     let url = format!("{}:{}/upload", server_addr, server_port);
 
     // Convert i16 to bytes
-    let byte_data: Vec<u8> = datas
+    let byte_data: Vec<u8> = data
         .iter()
         .flat_map(|&sample| sample.to_le_bytes())
         .collect();
@@ -70,14 +70,14 @@ mod tests {
         Ok((listener, port))
     }
 
-    /// Setup a TCP stream as client for testing
+    /// Set up a TCP stream as client for testing
     async fn create_client(port: u16) -> Result<TcpStream> {
         Ok(TcpStream::connect(format!("127.0.0.1:{}", port)).await?)
     }
 
-    /// Try to send i16 datas onto a mock http client
+    /// Try to send i16 data onto a mock http client
     ///
-    /// Is multi threaded to allow the execution of the server and client simultaneously
+    /// Is multithreaded to allow the execution of the server and client simultaneously
     #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
     async fn test_send_data_success() -> Result<()> {
         let mut server = Server::new_async().await;
@@ -101,7 +101,7 @@ mod tests {
         Ok(())
     }
 
-    /// Simulate a failling API to check error handling
+    /// Simulate a failing API to check error handling
     ///
     /// If request fail, the method should end as ok while closing the socket
     #[tokio::test(flavor = "multi_thread", worker_threads = 1)]
