@@ -11,3 +11,4 @@ rocket = { version = "0.5.1", features = ["json"] }
 serde = { version = "1.0.209", features = ["derive"] }
 surrealdb = "2.0.4"
 thiserror = "1.0.64"
+chrono = "0.4.40"

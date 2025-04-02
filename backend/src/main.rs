@@ -82,7 +82,9 @@ pub async fn rocket() -> _ {
             routes::paths,
             routes::make_new_user,
             routes::get_new_token,
-            routes::session
+            routes::session,
+            routes::list_songs,
+            routes::create_song
         ],
     )
 }
