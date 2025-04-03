@@ -1,6 +1,6 @@
 import { Link } from "@heroui/link";
 
-import { Navbar } from "@/components/NavBar.tsx";
+import { Navbar } from "@/components/navbar";
 
 export default function DefaultLayout({
   children,
