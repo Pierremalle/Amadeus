@@ -1,6 +1,7 @@
 mod error;
 mod routes;
 mod models;
+mod cors;
 
 use std::collections::HashMap;
 use std::sync::LazyLock;
@@ -8,6 +9,7 @@ use surrealdb::engine::remote::ws::{Client, Ws};
 use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
 use env_file_reader::read_file;
+use crate::cors::CORS;
 
 static DB: LazyLock<Surreal<Client>> = LazyLock::new(Surreal::init);
 
@@ -71,7 +73,7 @@ async fn init() -> Result<(), surrealdb::Error> {
 #[launch]
 pub async fn rocket() -> _ {
     init().await.expect("Something went wrong, shutting down");
-    rocket::build().mount(
+    rocket::build().attach(CORS).mount(
         "/",
         routes![
             routes::create_person,
@@ -84,7 +86,7 @@ pub async fn rocket() -> _ {
             routes::get_new_token,
             routes::session,
             routes::list_songs,
-            routes::create_song
+            routes::create_song,
         ],
     )
 }
