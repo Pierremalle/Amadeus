@@ -6,6 +6,7 @@ pub struct SongData {
     pub timestamp: String,
     pub name: String,
     pub bpm: f32,
+    pub duration: f32,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -14,4 +15,5 @@ pub struct Song {
     timestamp: String,
     name: String,
     bpm: f32,
+    duration: f32,
 }
