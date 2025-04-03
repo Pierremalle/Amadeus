@@ -1,10 +1,9 @@
 use serde::{Deserialize, Serialize};
-use surrealdb::dbs::node::Timestamp;
 use surrealdb::RecordId;
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SongData {
-    timestamp: Timestamp,
+    pub timestamp: String,
     name: String,
     bpm: f32,
 }
@@ -12,7 +11,7 @@ pub struct SongData {
 #[derive(Serialize, Deserialize)]
 pub struct Song {
     id: RecordId,
-    timestamp: Timestamp,
+    timestamp: String,
     name: String,
     bpm: f32,
 }

@@ -2,21 +2,32 @@ mod error;
 mod routes;
 mod models;
 
+use std::collections::HashMap;
 use std::sync::LazyLock;
 use surrealdb::engine::remote::ws::{Client, Ws};
 use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
+use env_file_reader::read_file;
 
 static DB: LazyLock<Surreal<Client>> = LazyLock::new(Surreal::init);
 
 #[macro_use] extern crate rocket;
 
 async fn init() -> Result<(), surrealdb::Error> {
-    DB.connect::<Ws>("localhost:5432").await?;
+    let env_variables = read_file("../.env").unwrap_or(HashMap::from([
+        ("SURREALDB_USER".to_string(), "root".to_string()),
+        ("SURREALDB_PASS".to_string(), "root".to_string()),
+        ("BDD_PORT".to_string(), "5432".to_string()),
+        ("BDD_HOST".to_string(), "localhost".to_string()),
+    ]));
+    let host = &env_variables["BDD_HOST"];
+    let port = &env_variables["BDD_PORT"];
+    let address = format!("{}:{}", host, port);
+    DB.connect::<Ws>(&address).await?;
 
     DB.signin(Root {
-        username: "root",
-        password: "root",
+        username: &env_variables["SURREALDB_USER"],
+        password: &env_variables["SURREALDB_PASS"],
     })
         .await?;
 
@@ -71,7 +82,9 @@ pub async fn rocket() -> _ {
             routes::paths,
             routes::make_new_user,
             routes::get_new_token,
-            routes::session
+            routes::session,
+            routes::list_songs,
+            routes::create_song
         ],
     )
 }
