@@ -85,13 +85,13 @@ export function SingleFileUploader({ onUploadSuccess }) {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                        <Input
-                            type={"number"}
+                        <NumberInput
                             name="bpm"
                             isRequired
                             label="BPM"
                             min={40}
                             max={300}
+                            defaultValue={120}
                             className="w-full"
                         />
                     </div>
