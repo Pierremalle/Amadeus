@@ -3,80 +3,142 @@ import {
     NavbarBrand,
     NavbarContent,
     NavbarItem,
+    NavbarMenuToggle,
+    NavbarMenu,
+    NavbarMenuItem,
     Dropdown,
     DropdownTrigger,
-    Avatar, DropdownMenu, DropdownItem, User
+    Avatar,
+    DropdownMenu,
+    DropdownItem,
+    User
 } from "@heroui/react";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
+import { useState } from "react";
 
-export const AcmeLogo = () => {
+export const CustomLogo = () => {
     return (
-        <svg fill="none" height="36" viewBox="0 0 32 32" width="36">
-            <path
-                clipRule="evenodd"
-                d="M17.6482 10.1305L15.8785 7.02583L7.02979 22.5499H10.5278L17.6482 10.1305ZM19.8798 14.0457L18.11 17.1983L19.394 19.4511H16.8453L15.1056 22.5499H24.7272L19.8798 14.0457Z"
-                fill="currentColor"
-                fillRule="evenodd"
-            />
-        </svg>
+        <img
+            src="../../favicon.ico"
+            alt="Amadeus"
+            className="h-9 w-auto object-contain"
+        />
     );
 };
 
 export function NavBar() {
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const location = useLocation();
+
+    const navLinks = [
+        { name: "Accueil", path: "/" },
+        { name: "Compositions", path: "/" },
+        { name: "Mes compositions", path: "/my_compositions" }
+    ];
+
     return (
-        <Navbar>
-            <NavbarBrand>
-                <AcmeLogo />
-                <p className="font-bold text-inherit">Amadeus</p>
-            </NavbarBrand>
-            <NavbarContent className="hidden sm:flex gap-4" justify="center">
-                <NavbarItem>
-                    <Link color="foreground" to="/">
-                        Accueil
-                    </Link>
-                </NavbarItem>
-                <NavbarItem isActive>
-                    <Link aria-current="page" to="#">
-                        Compositions
-                    </Link>
-                </NavbarItem>
-                <NavbarItem>
-                    <Link color="foreground" to="/my_compositions">
-                        Mes compositions
-                    </Link>
-                </NavbarItem>
+        <Navbar
+            onMenuOpenChange={setIsMenuOpen}
+            className="shadow-sm bg-white"
+            maxWidth="full"
+        >
+            <NavbarContent className="sm:hidden" justify="start">
+                <NavbarMenuToggle
+                    aria-label={isMenuOpen ? "Fermer le menu" : "Ouvrir le menu"}
+                    className="sm:hidden"
+                />
             </NavbarContent>
+
+            <NavbarBrand>
+                <CustomLogo />
+                <p className="font-bold text-inherit text-lg tracking-tight">Amadeus</p>
+            </NavbarBrand>
+
+            <NavbarContent className="hidden sm:flex gap-6" justify="center">
+                {navLinks.map((link) => (
+                    <NavbarItem
+                        key={link.path}
+                        isActive={location.pathname === link.path}
+                    >
+                        <Link
+                            to={link.path}
+                            className={`text-base font-medium transition-colors hover:text-primary ${
+                                location.pathname === link.path
+                                    ? "text-primary font-semibold"
+                                    : "text-gray-700"
+                            }`}
+                        >
+                            {link.name}
+                        </Link>
+                    </NavbarItem>
+                ))}
+            </NavbarContent>
+
             <NavbarContent as="div" justify="end">
                 <Dropdown placement="bottom-end">
                     <DropdownTrigger>
                         <Avatar
                             isBordered
                             as="button"
-                            className="transition-transform"
+                            className="transition-transform hover:scale-105"
                             color="secondary"
                             name="Jason Hughes"
                             size="sm"
                             src="https://i.pravatar.cc/150?u=a042581f4e29026704d"
                         />
                     </DropdownTrigger>
-                    <DropdownMenu aria-label="Profile Actions" variant="flat">
+                    <DropdownMenu
+                        aria-label="Profile Actions"
+                        variant="flat"
+                        className="w-64"
+                    >
                         <DropdownItem key="profile" className="h-14 gap-2">
                             <User
                                 avatarProps={{
                                     src: "https://i.pravatar.cc/150?u=a04258114e29026702d",
+                                    size: "md",
                                 }}
-                                description="Dev"
+                                description="Développeur"
                                 name="Ash"
+                                className="py-2"
                             />
                         </DropdownItem>
-                        <DropdownItem key="profil">Mon profil</DropdownItem>
-                        <DropdownItem key="settings">Mes compositions</DropdownItem>
-                        <DropdownItem key="logout" color="danger">
-                            Se déconnecter
+                        <DropdownItem key="profil" className="text-gray-700 py-2">
+                            <Link to="/profil" className="flex items-center gap-2">
+                                Mon profil
+                            </Link>
+                        </DropdownItem>
+                        <DropdownItem key="settings" className="text-gray-700 py-2">
+                            <Link to="/my_compositions" className="flex items-center gap-2">
+                                Mes compositions
+                            </Link>
+                        </DropdownItem>
+                        <DropdownItem key="logout" color="danger" className="py-2">
+                            <span className="flex items-center gap-2">
+                                Se déconnecter
+                            </span>
                         </DropdownItem>
                     </DropdownMenu>
                 </Dropdown>
             </NavbarContent>
+
+            <NavbarMenu>
+                {navLinks.map((link) => (
+                    <NavbarMenuItem key={link.path}>
+                        <Link
+                            to={link.path}
+                            className={`text-base py-2 ${
+                                location.pathname === link.path
+                                    ? "text-primary font-medium"
+                                    : "text-gray-700"
+                            }`}
+                            onClick={() => setIsMenuOpen(false)}
+                        >
+                            {link.name}
+                        </Link>
+                    </NavbarMenuItem>
+                ))}
+            </NavbarMenu>
         </Navbar>
     );
 }
