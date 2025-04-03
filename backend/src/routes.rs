@@ -9,9 +9,18 @@ use crate::error::Error;
 use crate::models::person::{Person, PersonData};
 use crate::models::song::{Song, SongData};
 use chrono::prelude::*;
+use rocket::fs::TempFile;
+use rocket::form::Form;
 
 const PERSON: &str = "person";
 const SONG: &str = "song";
+
+#[derive(FromForm)]
+struct Upload<'r> {
+    name: String,
+    bpm: f32,
+    file: TempFile<'r>,
+}
 
 #[get("/")]
 pub async fn paths() -> &'static str {
@@ -127,10 +136,13 @@ pub async fn list_songs() -> Result<Json<Vec<Song>>, Error> {
 
 #[post("/song", data = "<song>")]
 pub async fn create_song(
-    song: Json<SongData>,
+    song: Form<Upload<'_>>,
 ) -> Result<Json<Option<Song>>, Error> {
-    let mut data = song.into_inner();
-    data.timestamp = Utc::now().to_string();
+    let mut data : SongData = SongData{
+        timestamp: Utc::now().to_string(),
+        bpm: song.bpm,
+        name: song.name.clone(),
+    };
     let new_song = DB
         .create(SONG)
         .content(data)

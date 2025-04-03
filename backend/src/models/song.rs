@@ -4,8 +4,8 @@ use surrealdb::RecordId;
 #[derive(Serialize, Deserialize, Clone)]
 pub struct SongData {
     pub timestamp: String,
-    name: String,
-    bpm: f32,
+    pub name: String,
+    pub bpm: f32,
 }
 
 #[derive(Serialize, Deserialize)]
