@@ -3,11 +3,11 @@ import {
     NavbarBrand,
     NavbarContent,
     NavbarItem,
-    Link,
     Dropdown,
     DropdownTrigger,
     Avatar, DropdownMenu, DropdownItem, User
 } from "@heroui/react";
+import { Link } from "react-router-dom";
 
 export const AcmeLogo = () => {
     return (
@@ -31,17 +31,17 @@ export function NavBar() {
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem>
-                    <Link color="foreground" href="/">
+                    <Link color="foreground" to="/">
                         Accueil
                     </Link>
                 </NavbarItem>
                 <NavbarItem isActive>
-                    <Link aria-current="page" href="#">
+                    <Link aria-current="page" to="#">
                         Compositions
                     </Link>
                 </NavbarItem>
                 <NavbarItem>
-                    <Link color="foreground" href="/{user}/{song_id}">
+                    <Link color="foreground" to="/my_compositions">
                         Mes compositions
                     </Link>
                 </NavbarItem>
