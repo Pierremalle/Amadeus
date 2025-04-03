@@ -12,3 +12,5 @@ serde = { version = "1.0.209", features = ["derive"] }
 surrealdb = "2.0.4"
 thiserror = "1.0.64"
 chrono = "0.4.40"
+tokio = "1.44.1"
+rocket_cors = "0.6.0"

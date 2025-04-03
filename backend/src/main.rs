@@ -10,6 +10,8 @@ use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
 use env_file_reader::read_file;
 use crate::cors::CORS;
+use rocket::http::Method;
+use rocket_cors::{AllowedOrigins, CorsOptions};
 
 static DB: LazyLock<Surreal<Client>> = LazyLock::new(Surreal::init);
 
@@ -44,6 +46,7 @@ async fn init() -> Result<(), surrealdb::Error> {
         DEFINE FIELD timestamp ON TABLE song TYPE string;
         DEFINE FIELD name ON TABLE song TYPE string;
         DEFINE FIELD bpm ON TABLE song TYPE float;
+        DEFINE FIELD duration ON TABLE song TYPE float;
         DEFINE FIELD created_by ON TABLE person VALUE $auth READONLY;
 
         DEFINE TABLE person SCHEMALESS
@@ -72,8 +75,17 @@ async fn init() -> Result<(), surrealdb::Error> {
 
 #[launch]
 pub async fn rocket() -> _ {
+    let cors = CorsOptions::default()
+        .allowed_origins(AllowedOrigins::all())
+        .allowed_methods(
+            vec![Method::Get, Method::Post, Method::Patch]
+                .into_iter()
+                .map(From::from)
+                .collect(),
+        )
+        .allow_credentials(true);
     init().await.expect("Something went wrong, shutting down");
-    rocket::build().attach(CORS).mount(
+    rocket::build().attach(cors.to_cors().unwrap()).mount(
         "/",
         routes![
             routes::create_person,
