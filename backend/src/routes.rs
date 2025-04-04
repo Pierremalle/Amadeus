@@ -154,3 +154,9 @@ pub async fn create_song(
         .await?;
     Ok(Json(new_song))
 }
+
+#[post("/songs/delete")]
+pub async fn clean_songs() -> Result<(), Error>{
+    let _ : Vec<Song> = DB.delete(SONG).await?;
+    Ok(())
+}
