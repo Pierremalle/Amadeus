@@ -19,7 +19,7 @@ const SONG: &str = "song";
 struct Upload<'r> {
     name: String,
     bpm: f32,
-    // duration: f32,
+    duration: f32,
     file: TempFile<'r>,
     email: Option<String>,
 }
@@ -143,10 +143,11 @@ pub async fn create_song(
     let mut data : SongData = SongData{
         timestamp: Utc::now().to_string(),
         bpm: song.bpm,
-        duration: 0.0,
+        duration: song.duration,
         name: song.name.clone(),
     };
-    let _ = song.file.persist_to("storage").await;
+    let result = song.file.persist_to("storage").await;
+    println!("{}", result.is_ok());
     let new_song = DB
         .create(SONG)
         .content(data)
