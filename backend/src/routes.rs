@@ -151,7 +151,7 @@ pub async fn create_song(
         bpm: song.bpm,
         duration: song.duration,
         name: song.name.clone(),
-        path: path,
+        path: format!("storage/{}", &file_name),
     };
 
     if result.is_err() {
