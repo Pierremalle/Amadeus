@@ -2,6 +2,7 @@ import { NavBar } from "../components/Navbar.tsx";
 import { Cards } from "../components/Cards.tsx";
 import { instance } from "../env.tsx";
 import { useEffect, useState } from "react";
+import MusicCards from "@/components/MusicCards.tsx";
 
 async function requestApp() {
     const response = await instance.get('songs');
@@ -43,7 +44,7 @@ export default function Home() {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {recentSongs.map((song) => (
-                                <Cards key={"recent_" + song.id.id.String} song={song} />
+                                <MusicCards key={"recent_" + song.id.id.String} song={song} />
                             ))}
                         </div>
                     )}
