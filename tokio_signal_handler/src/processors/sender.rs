@@ -88,8 +88,12 @@ mod tests {
             .create_async()
             .await;
 
-        env::set_var("BACKEND_ADDR", &server.url());
-        env::set_var("API_PORT", "80");
+        unsafe {
+            env::set_var("BACKEND_ADDR", &server.url());
+        }
+        unsafe {
+            env::set_var("API_PORT", "80");
+        }
 
         let (_listener, port) = setup_listener().await?;
         let mut client_socket = create_client(port).await?;
@@ -114,8 +118,12 @@ mod tests {
             .create_async()
             .await;
 
-        env::set_var("BACKEND_ADDR", &server.url());
-        env::set_var("API_PORT", "80");
+        unsafe {
+            env::set_var("BACKEND_ADDR", &server.url());
+        }
+        unsafe {
+            env::set_var("API_PORT", "80");
+        }
 
         let (_listener, port) = setup_listener().await?;
         let mut client_socket = create_client(port).await?;

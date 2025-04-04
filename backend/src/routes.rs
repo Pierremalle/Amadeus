@@ -1,14 +1,14 @@
+use crate::error::Error;
+use crate::models::person::{Person, PersonData};
+use crate::models::song::{Song, SongData};
+use crate::DB;
+use chrono::prelude::*;
 use faker_rand::fr_fr::internet::Email;
 use faker_rand::fr_fr::names::FirstName;
 use rocket::get;
 use rocket::serde::json::Json;
 use serde::{Deserialize, Serialize};
 use surrealdb::opt::auth::Record;
-use crate::DB;
-use crate::error::Error;
-use crate::models::person::{Person, PersonData};
-use crate::models::song::{Song, SongData};
-use chrono::prelude::*;
 
 const PERSON: &str = "person";
 const SONG: &str = "song";
@@ -126,14 +126,9 @@ pub async fn list_songs() -> Result<Json<Vec<Song>>, Error> {
 }
 
 #[post("/song", data = "<song>")]
-pub async fn create_song(
-    song: Json<SongData>,
-) -> Result<Json<Option<Song>>, Error> {
+pub async fn create_song(song: Json<SongData>) -> Result<Json<Option<Song>>, Error> {
     let mut data = song.into_inner();
     data.timestamp = Utc::now().to_string();
-    let new_song = DB
-        .create(SONG)
-        .content(data)
-        .await?;
+    let new_song = DB.create(SONG).content(data).await?;
     Ok(Json(new_song))
 }

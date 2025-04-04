@@ -6,10 +6,6 @@ Based on your project's goal of analyzing WAV audio to extract tonality, rhythm,
    - Essential for identifying frequencies present in your audio
    - Rust has libraries like `rustfft` for this
 
-2. **Constant-Q Transform (CQT)**
-   - Better than FFT for musical applications as it has logarithmic frequency resolution matching musical scales
-   - Provides better resolution for lower frequencies than standard FFT
-
 ### Pitch Detection
 1. **YIN Algorithm**
    - Improved autocorrelation method for fundamental frequency estimation

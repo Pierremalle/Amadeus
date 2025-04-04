@@ -1,5 +1,5 @@
 [workspace]
-members = ["backend", "file_sender"]
+members = ["backend", "file_sender", "tokio_signal_handler"]
 resolver = "2"
 
 [profile.android-dev]
