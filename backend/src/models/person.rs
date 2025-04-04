@@ -1,6 +1,6 @@
+use crate::models::song::{Song, SongData};
 use serde::{Deserialize, Serialize};
 use surrealdb::RecordId;
-use crate::models::song::{Song, SongData};
 
 #[derive(Serialize, Deserialize, Clone)]
 pub struct PersonData {
@@ -10,7 +10,7 @@ pub struct PersonData {
     email: String,
     password: String,
     instruments: Vec<String>,
-    compositions: Vec<SongData>
+    compositions: Vec<SongData>,
 }
 
 #[derive(Serialize, Deserialize)]
@@ -21,5 +21,5 @@ pub struct Person {
     email: String,
     password: String,
     instruments: Vec<String>,
-    compositions: Vec<Song>
+    compositions: Vec<Song>,
 }

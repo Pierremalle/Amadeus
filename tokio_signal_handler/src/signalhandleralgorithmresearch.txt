@@ -1,0 +1,43 @@
+Based on your project's goal of analyzing WAV audio to extract tonality, rhythm, and notes, here are some relevant signal processing algorithms:
+
+### Frequency Analysis
+1. **Fast Fourier Transform (FFT)**
+   - Fundamental for converting time-domain signals to frequency domain
+   - Essential for identifying frequencies present in your audio
+   - Rust has libraries like `rustfft` for this
+
+### Pitch Detection
+1. **YIN Algorithm**
+   - Improved autocorrelation method for fundamental frequency estimation
+   - Good for monophonic sources (single notes)
+
+2. **Multiple Fundamental Frequency Estimation**
+   - For polyphonic audio (multiple simultaneous notes)
+   - Algorithms like PYIN (Probabilistic YIN) or Harmonic Product Spectrum (HPS)
+
+### Rhythm Analysis
+1. **Onset Detection**
+   - Spectral flux method for identifying when notes begin
+   - Energy-based methods to detect sudden changes in amplitude
+
+2. **Beat Tracking**
+   - Tempo estimation using autocorrelation of onset strength
+   - Beat histogram analysis
+
+### Note Extraction
+1. **Non-Negative Matrix Factorization (NMF)**
+   - Decomposes spectrogram into components representing individual notes
+
+2. **Spectral Peak Picking**
+   - Identify peaks in frequency spectrum that correspond to notes
+
+### Feature Extraction
+1. **MFCC (Mel-Frequency Cepstral Coefficients)**
+   - For timbral analysis and instrument identification
+
+2. **Chroma Features**
+   - Represent harmonic content by projecting spectrum onto 12 bins representing musical pitches
+
+These algorithms could be implemented in Rust using crates like `rustfft`, `ndarray` for numerical operations, and potentially audio-specific crates like `dasp` or binding to specialized C/C++ libraries through FFI if needed.
+
+(Comes from LLM)

@@ -1,4 +1,3 @@
-
 use rocket::http::Status;
 use rocket::response::{self, Responder, Response};
 use rocket::Request;

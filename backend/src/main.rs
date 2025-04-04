@@ -1,23 +1,17 @@
 mod error;
-mod routes;
 mod models;
-mod cors;
 
+use env_file_reader::read_file;
 use std::collections::HashMap;
 use std::sync::LazyLock;
 use surrealdb::engine::remote::ws::{Client, Ws};
 use surrealdb::opt::auth::Root;
 use surrealdb::Surreal;
-use env_file_reader::read_file;
-use crate::cors::CORS;
-use rocket::http::Method;
-use rocket_cors::{AllowedOrigins, CorsOptions};
-use rocket::data::{Limits, ToByteUnit};
-use lazy_static::lazy_static;
 
 static DB: LazyLock<Surreal<Client>> = LazyLock::new(Surreal::init);
 
-#[macro_use] extern crate rocket;
+#[macro_use]
+extern crate rocket;
 
 lazy_static!{
     static ref ENV_VARIABLES: HashMap<String, String> = read_file("../.env").unwrap_or(HashMap::from([
@@ -39,7 +33,7 @@ async fn init() -> Result<(), surrealdb::Error> {
         username: &ENV_VARIABLES["SURREALDB_USER"],
         password: &ENV_VARIABLES["SURREALDB_PASS"],
     })
-        .await?;
+    .await?;
 
     DB.use_ns("namespace").use_db("database").await?;
 

@@ -1,0 +1,23 @@
+[package]
+name = "tokio_signal_handler"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+tokio = { version = "1.44.1", features = ["full", "tracing"] }
+tracing = "0.1"
+tracing-subscriber = "0.3"
+console-subscriber = "0.4.1"
+tokio-test = "0.4.4"
+reqwest = {version = "0.12.15", features = ["json", "multipart"]}
+serde = { version = "1.0.219", features = ["derive"] }
+serde_json = "1.0.140"
+chrono = "0.4.40"
+hound = "3.5.0"
+ndarray = { version = "0.16.1", features = ["approx"] }
+rustfft = "6.2.0"
+
+
+[dev-dependencies]
+anyhow = "1.0.97"
+mockito = "1.7.0"
