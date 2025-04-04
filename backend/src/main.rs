@@ -1,6 +1,5 @@
 mod error;
 mod models;
-mod routes;
 
 use env_file_reader::read_file;
 use std::collections::HashMap;
@@ -14,21 +13,25 @@ static DB: LazyLock<Surreal<Client>> = LazyLock::new(Surreal::init);
 #[macro_use]
 extern crate rocket;
 
+lazy_static!{
+    static ref ENV_VARIABLES: HashMap<String, String> = read_file("../.env").unwrap_or(HashMap::from([
+    ("SURREALDB_USER".to_string(), "root".to_string()),
+    ("SURREALDB_PASS".to_string(), "root".to_string()),
+    ("BDD_PORT".to_string(), "5432".to_string()),
+    ("BDD_HOST".to_string(), "localhost".to_string()),
+    ("STORAGE_DIRECTORY".to_string(), "~/amadeus_storage".to_string()),
+]));
+}
+
 async fn init() -> Result<(), surrealdb::Error> {
-    let env_variables = read_file("../.env").unwrap_or(HashMap::from([
-        ("SURREALDB_USER".to_string(), "root".to_string()),
-        ("SURREALDB_PASS".to_string(), "root".to_string()),
-        ("BDD_PORT".to_string(), "5432".to_string()),
-        ("BDD_HOST".to_string(), "localhost".to_string()),
-    ]));
-    let host = &env_variables["BDD_HOST"];
-    let port = &env_variables["BDD_PORT"];
+    let host = &ENV_VARIABLES["BDD_HOST"];
+    let port = &ENV_VARIABLES["BDD_PORT"];
     let address = format!("{}:{}", host, port);
     DB.connect::<Ws>(&address).await?;
 
     DB.signin(Root {
-        username: &env_variables["SURREALDB_USER"],
-        password: &env_variables["SURREALDB_PASS"],
+        username: &ENV_VARIABLES["SURREALDB_USER"],
+        password: &ENV_VARIABLES["SURREALDB_PASS"],
     })
     .await?;
 
@@ -42,7 +45,9 @@ async fn init() -> Result<(), surrealdb::Error> {
             FOR UPDATE, DELETE WHERE created_by = $auth;
         DEFINE FIELD timestamp ON TABLE song TYPE string;
         DEFINE FIELD name ON TABLE song TYPE string;
+        DEFINE FIELD path ON TABLE song TYPE string;
         DEFINE FIELD bpm ON TABLE song TYPE float;
+        DEFINE FIELD duration ON TABLE song TYPE float;
         DEFINE FIELD created_by ON TABLE person VALUE $auth READONLY;
 
         DEFINE TABLE person SCHEMALESS
@@ -71,8 +76,17 @@ async fn init() -> Result<(), surrealdb::Error> {
 
 #[launch]
 pub async fn rocket() -> _ {
+    let cors = CorsOptions::default()
+        .allowed_origins(AllowedOrigins::all())
+        .allowed_methods(
+            vec![Method::Get, Method::Post, Method::Patch]
+                .into_iter()
+                .map(From::from)
+                .collect(),
+        )
+        .allow_credentials(true);
     init().await.expect("Something went wrong, shutting down");
-    rocket::build().mount(
+    rocket::build().attach(cors.to_cors().unwrap()).mount(
         "/",
         routes![
             routes::create_person,
@@ -85,7 +99,8 @@ pub async fn rocket() -> _ {
             routes::get_new_token,
             routes::session,
             routes::list_songs,
-            routes::create_song
+            routes::create_song,
+            routes::clean_songs,
         ],
     )
 }

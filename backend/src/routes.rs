@@ -1,17 +1,28 @@
-use crate::error::Error;
-use crate::models::person::{Person, PersonData};
-use crate::models::song::{Song, SongData};
-use crate::DB;
-use chrono::prelude::*;
+use std::fmt::format;
 use faker_rand::fr_fr::internet::Email;
 use faker_rand::fr_fr::names::FirstName;
 use rocket::get;
 use rocket::serde::json::Json;
 use serde::{Deserialize, Serialize};
 use surrealdb::opt::auth::Record;
+use crate::{DB, ENV_VARIABLES};
+use crate::error::Error;
+use crate::models::person::{Person, PersonData};
+use crate::models::song::{Song, SongData};
+use chrono::prelude::*;
+use rocket::fs::TempFile;
+use rocket::form::Form;
 
 const PERSON: &str = "person";
 const SONG: &str = "song";
+
+#[derive(FromForm)]
+struct Upload<'r> {
+    name: String,
+    bpm: f32,
+    duration: f32,
+    file: TempFile<'r>
+}
 
 #[get("/")]
 pub async fn paths() -> &'static str {
@@ -30,8 +41,8 @@ pub async fn paths() -> &'static str {
                             |
 /people: List all people    |  curl -X GET    -H "Content-Type: application/json"                          http://localhost:8080/people
 
-/song: Create a song        |  curl -X POST   -H "Content-Type: application/json" -d '{"name":"Paint in black", "bpm":4.52}' http://localhost:8080/person/one
-/songs get songs            |  curl -X GET    -H "Content-Type: application/json"                          http://localhost:8080/songs
+/song: Create a song        |  curl -v -F name="Enemy" -F bpm=50.5 -F duration=2.7 http://localhost:8000/song
+/songs get songs            |  curl -X GET    -H "Content-Type: application/json"                          http://localhost:8000/songs
 
 /new_user:  Create a new record user
 /new_token: Get instructions for a new token if yours has expired"#
@@ -126,9 +137,36 @@ pub async fn list_songs() -> Result<Json<Vec<Song>>, Error> {
 }
 
 #[post("/song", data = "<song>")]
-pub async fn create_song(song: Json<SongData>) -> Result<Json<Option<Song>>, Error> {
-    let mut data = song.into_inner();
-    data.timestamp = Utc::now().to_string();
-    let new_song = DB.create(SONG).content(data).await?;
+pub async fn create_song(
+    mut song: Form<Upload<'_>>,
+) -> Result<Json<Option<Song>>, Error> {
+    let directory = &ENV_VARIABLES["STORAGE_DIRECTORY"];
+    let file_name = format!("{}.wav", &song.name);
+    let path = format!("{}/{}", &directory, &file_name);
+
+    let result = song.file.persist_to(&path).await;
+
+    let data : SongData = SongData{
+        timestamp: Utc::now().to_string(),
+        bpm: song.bpm,
+        duration: song.duration,
+        name: song.name.clone(),
+        path: format!("storage/{}", &file_name),
+    };
+
+    if result.is_err() {
+        println!("{}", result.err().unwrap().to_string());
+    }
+
+    let new_song = DB
+        .create(SONG)
+        .content(data)
+        .await?;
     Ok(Json(new_song))
+}
+
+#[post("/songs/delete")]
+pub async fn clean_songs() -> Result<(), Error>{
+    let _ : Vec<Song> = DB.delete(SONG).await?;
+    Ok(())
 }
