@@ -19,7 +19,9 @@ const SONG: &str = "song";
 struct Upload<'r> {
     name: String,
     bpm: f32,
+    duration: f32,
     file: TempFile<'r>,
+    email: Option<String>,
 }
 
 #[get("/")]
@@ -39,8 +41,8 @@ pub async fn paths() -> &'static str {
                             |
 /people: List all people    |  curl -X GET    -H "Content-Type: application/json"                          http://localhost:8080/people
 
-/song: Create a song        |  curl -X POST   -H "Content-Type: application/json" -d '{"name":"Paint in black", "bpm":4.52}' http://localhost:8080/person/one
-/songs get songs            |  curl -X GET    -H "Content-Type: application/json"                          http://localhost:8080/songs
+/song: Create a song        |  curl -v -F name="Enemy" -F bpm=50.5 -F duration=2.7 http://localhost:8000/song
+/songs get songs            |  curl -X GET    -H "Content-Type: application/json"                          http://localhost:8000/songs
 
 /new_user:  Create a new record user
 /new_token: Get instructions for a new token if yours has expired"#
@@ -136,13 +138,16 @@ pub async fn list_songs() -> Result<Json<Vec<Song>>, Error> {
 
 #[post("/song", data = "<song>")]
 pub async fn create_song(
-    song: Form<Upload<'_>>,
+    mut song: Form<Upload<'_>>,
 ) -> Result<Json<Option<Song>>, Error> {
     let mut data : SongData = SongData{
         timestamp: Utc::now().to_string(),
         bpm: song.bpm,
+        duration: song.duration,
         name: song.name.clone(),
     };
+    let result = song.file.persist_to("storage").await;
+    println!("{}", result.is_ok());
     let new_song = DB
         .create(SONG)
         .content(data)
