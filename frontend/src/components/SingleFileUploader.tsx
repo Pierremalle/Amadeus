@@ -26,7 +26,8 @@ export function SingleFileUploader({ onUploadSuccess }) {
             const response = await instance.post('song', {
                 bpm: formData.get("bpm"),
                 name: formData.get("name"),
-                file: formData.get("file")
+                file: formData.get("file"),
+                duration: formData.get("duration")
             }, {
                 headers: { "Content-Type": "multipart/form-data" }
             });
@@ -68,7 +69,6 @@ export function SingleFileUploader({ onUploadSuccess }) {
                             <Input
                                 name="file"
                                 type="file"
-                                accept="audio/wav"
                                 isRequired
                                 onChange={handleFileChange}
                                 className="w-full"
@@ -92,6 +92,14 @@ export function SingleFileUploader({ onUploadSuccess }) {
                             min={40}
                             max={300}
                             defaultValue={120}
+                            className="w-full"
+                        />
+                    </div>
+                    <div>
+                        <NumberInput
+                            name="duration"
+                            isRequired
+                            label="Durée"
                             className="w-full"
                         />
                     </div>

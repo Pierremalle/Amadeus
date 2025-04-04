@@ -4,14 +4,12 @@ import { StarRating } from './StarRating';
 export function Cards({ song }) {
     const handleRating = (rating) => {
         console.log('Note sélectionnée :', rating);
-        // Vous pouvez envoyer cette note à votre backend, par exemple
     };
 
-    // Formatage de durée pour affichage
     const formatDuration = () => {
-        const minutes = Math.floor(2.5); // Exemple: 2:30
-        const seconds = Math.floor((2.5 - minutes) * 60);
-        return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+        console.log(song.duration)
+        const minutes = Math.floor(song.duration / 60);
+        return `${minutes} minutes`;
     };
 
     return (
@@ -41,16 +39,24 @@ export function Cards({ song }) {
                     <div className="flex items-center gap-1">
                         <p>Tempo: {song.bpm || "N/A"} bpm</p>
                     </div>
-                </div>
-                <div className="mt-2 flex items-center gap-1 text-xs">
-                    <p>Genre: {song.genre || "Non spécifié"}</p>
+                    {song.path &&
+                        <div className="flex items-center gap-1">
+                            <audio controls>
+                                <source src={song.path} type="audio/wav"/>
+                                Your browser does not support the audio element.
+                            </audio>
+                        </div>
+                    }
+                    {/*<div className="flex items-center gap-1">
+                        <audio controls>
+                            <source src="../../Chaussette.wav" type="audio/wav"/>
+                            Your browser does not support the audio element.
+                        </audio>
+                    </div>*/}
                 </div>
             </CardBody>
             <Divider />
             <CardFooter className="flex justify-between items-center py-2">
-                <button className="text-blue-500 hover:underline text-xs flex items-center gap-1">
-                    Écouter
-                </button>
                 <StarRating
                     totalStars={5}
                     initialRating={song.rating}

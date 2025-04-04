@@ -29,7 +29,7 @@ export default function Home() {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {songs.map((song) => (
-                                <Cards key={song.id.id} song={song} />
+                                <Cards key={song.id.id.String} song={song} />
                             ))}
                         </div>
                     )}
@@ -43,7 +43,7 @@ export default function Home() {
                     ) : (
                         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                             {recentSongs.map((song) => (
-                                <Cards key={song.id.id} song={song} />
+                                <Cards key={"recent_" + song.id.id.String} song={song} />
                             ))}
                         </div>
                     )}
