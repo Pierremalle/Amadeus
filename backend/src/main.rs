@@ -100,6 +100,7 @@ pub async fn rocket() -> _ {
             routes::session,
             routes::list_songs,
             routes::create_song,
+            routes::clean_songs,
         ],
     )
 }
