@@ -1,10 +1,11 @@
+use std::fmt::format;
 use faker_rand::fr_fr::internet::Email;
 use faker_rand::fr_fr::names::FirstName;
 use rocket::get;
 use rocket::serde::json::Json;
 use serde::{Deserialize, Serialize};
 use surrealdb::opt::auth::Record;
-use crate::DB;
+use crate::{DB, ENV_VARIABLES};
 use crate::error::Error;
 use crate::models::person::{Person, PersonData};
 use crate::models::song::{Song, SongData};
@@ -20,8 +21,7 @@ struct Upload<'r> {
     name: String,
     bpm: f32,
     duration: f32,
-    file: TempFile<'r>,
-    email: Option<String>,
+    file: TempFile<'r>
 }
 
 #[get("/")]
@@ -140,14 +140,24 @@ pub async fn list_songs() -> Result<Json<Vec<Song>>, Error> {
 pub async fn create_song(
     mut song: Form<Upload<'_>>,
 ) -> Result<Json<Option<Song>>, Error> {
-    let mut data : SongData = SongData{
+    let directory = &ENV_VARIABLES["STORAGE_DIRECTORY"];
+    let file_name = format!("{}.wav", &song.name);
+    let path = format!("{}/{}", &directory, &file_name);
+
+    let result = song.file.persist_to(&path).await;
+
+    let data : SongData = SongData{
         timestamp: Utc::now().to_string(),
         bpm: song.bpm,
         duration: song.duration,
         name: song.name.clone(),
+        path: path,
     };
-    let result = song.file.persist_to("storage").await;
-    println!("{}", result.is_ok());
+
+    if result.is_err() {
+        println!("{}", result.err().unwrap().to_string());
+    }
+
     let new_song = DB
         .create(SONG)
         .content(data)
