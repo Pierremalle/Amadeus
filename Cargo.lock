@@ -340,6 +340,7 @@ dependencies = [
  "chrono",
  "env-file-reader",
  "faker_rand",
+ "lazy_static",
  "rand 0.8.5",
  "rocket",
  "rocket_cors",
