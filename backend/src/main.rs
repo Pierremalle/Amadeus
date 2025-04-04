@@ -12,6 +12,7 @@ use env_file_reader::read_file;
 use crate::cors::CORS;
 use rocket::http::Method;
 use rocket_cors::{AllowedOrigins, CorsOptions};
+use rocket::data::{Limits, ToByteUnit};
 
 static DB: LazyLock<Surreal<Client>> = LazyLock::new(Surreal::init);
 
