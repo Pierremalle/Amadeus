@@ -10,7 +10,7 @@ pub async fn send_data(
 ) -> Result<(), Box<dyn std::error::Error>> {
     let server_addr = env::var("BACKEND_ADDR").unwrap_or_else(|_| "http://localhost".to_string());
     let server_port = env::var("API_PORT").unwrap_or_else(|_| "8000".to_string());
-    let url = format!("{}:{}/upload", server_addr, server_port);
+    let url = format!("{}:{}/song", server_addr, server_port);
 
     // Convert i16 to bytes
     let byte_data: Vec<u8> = data
@@ -25,10 +25,9 @@ pub async fn send_data(
 
     // Create a JSON object with metadata
     let metadata = json!({
-        "timestamp": Utc::now().timestamp(),
-        "user_id": "12345",
-        "name": Utc::now().timestamp(),
-        "format": "wav"
+        "name": "fichier_audio.wav",
+        "bpm": 120.0,
+        "duration": 3.5,
     });
 
     // Serialize metadata to string

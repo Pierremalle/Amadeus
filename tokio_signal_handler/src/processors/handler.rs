@@ -6,10 +6,8 @@ use rustfft::{num_complex::Complex, FftPlanner};
 
 #[derive(Debug)]
 pub struct AudioInformations {
-    pub notes: Vec<(f32, String)>,
-    pub tempo: f32,
-    pub key: String,
-    pub chroma: Array1<f32>,
+    pub name: String,
+    pub bpm: f32,
     pub duration: Duration,
 }
 
@@ -45,10 +43,8 @@ pub fn analyze_wav_file(filepath: &str) -> Result<AudioInformations, Box<dyn std
     println!("duration : {:?}", duration);
 
     Ok(AudioInformations {
-        notes,
-        tempo,
-        key,
-        chroma,
+        name: filepath.to_string(),
+        bpm: tempo,
         duration,
     })
 }
@@ -498,9 +494,6 @@ mod tests {
         assert!(result.is_ok());
 
         let audio_info = result.unwrap();
-        assert_eq!(audio_info.notes.len(), 885);
-        assert_eq!(audio_info.tempo, 130.0);
-        assert_eq!(audio_info.key, "A minor");
         assert_eq!(audio_info.duration.as_secs_f32(), 190.0);
     }
 }
