@@ -1223,13 +1223,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "file_sender"
-version = "0.1.0"
-dependencies = [
- "wavers",
-]
-
-[[package]]
 name = "fixedbitset"
 version = "0.4.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -1876,16 +1869,6 @@ dependencies = [
  "tokio",
  "tower-service",
  "tracing",
-]
-
-[[package]]
-name = "i24"
-version = "1.0.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bafc62750bce7c2603750d1c19532e226bb85bd21f5385ab952cc29b8c31e2af"
-dependencies = [
- "bytemuck",
- "num-traits",
 ]
 
 [[package]]
@@ -5383,19 +5366,6 @@ dependencies = [
  "parking_lot",
  "pin-utils",
  "wasm-bindgen",
-]
-
-[[package]]
-name = "wavers"
-version = "1.5.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "d599ddd98c95ad3d3fc898cfb5c4023430f6ea62f96083f46d13cc8b82589bd3"
-dependencies = [
- "bytemuck",
- "i24",
- "num-traits",
- "paste",
- "thiserror 1.0.69",
 ]
 
 [[package]]
