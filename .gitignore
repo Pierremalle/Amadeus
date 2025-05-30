@@ -22,3 +22,5 @@ target/
 
 bdd/
 
+node_modules/
+package-lock.json

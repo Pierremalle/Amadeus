@@ -2,6 +2,15 @@ FROM rust:slim AS builder
 
 WORKDIR /usr/src/app
 
+# Install build dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    pkg-config \
+    libssl-dev \
+    ca-certificates \
+    curl \
+    tzdata \
+    && rm -rf /var/lib/apt/lists/*
+
 COPY Cargo.toml ./
 COPY src ./src
 
