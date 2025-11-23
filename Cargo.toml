@@ -1,6 +1,19 @@
 [workspace]
-members = ["backend", "tokio_signal_handler"]
 resolver = "2"
+members = [
+    "packages/ui",
+    "packages/web",
+    "packages/api",
+    "packages/tokio_signal_handler"
+]
+
+[workspace.dependencies]
+dioxus = { version = "0.7.1" }
+
+# workspace
+ui = { path = "packages/ui" }
+api = { path = "packages/api" }
+
 
 [profile.android-dev]
 inherits = "dev"
